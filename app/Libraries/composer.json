@@ -1,0 +1,13 @@
+{
+    "name": "asus/libraries",
+    "authors": [
+        {
+            "name": "Ronaldo Pei Piro",
+            "email": "ronaldopeipiro11@gmail.com"
+        }
+    ],
+    "require": {
+        "mpdf/mpdf": "^8.0",
+        "google/apiclient": "^2.0"
+    }
+}
