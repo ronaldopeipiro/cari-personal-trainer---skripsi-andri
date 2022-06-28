@@ -21,7 +21,7 @@ class FitnessCenterModel extends Model
 		'update_datetime'
 	];
 
-	public function getCustomer($id_fitness_center = false)
+	public function getFitnessCenter($id_fitness_center = false)
 	{
 		if ($id_fitness_center == false) {
 			return $this->orderBy('id_fitness_center', 'desc')->findAll();
@@ -29,20 +29,13 @@ class FitnessCenterModel extends Model
 		return $this->where(['id_fitness_center' => $id_fitness_center])->first();
 	}
 
-	public function getCustomerByStatus($status)
-	{
-		return $this->where([
-			'status' => $status
-		])->orderBy('id_fitness_center', 'DESC')->findAll();
-	}
-
-	public function updateCustomer($data, $id)
+	public function updateFitnessCenter($data, $id)
 	{
 		$query = $this->db->table($this->table)->update($data, array('id_fitness_center' => $id));
 		return $query;
 	}
 
-	public function deleteCustomer($id)
+	public function deleteFitnessCenter($id)
 	{
 		return $this->db->table($this->table)->delete(['id_fitness_center' => $id]);
 	}

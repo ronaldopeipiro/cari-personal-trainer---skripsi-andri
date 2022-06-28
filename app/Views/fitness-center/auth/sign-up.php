@@ -6,8 +6,7 @@
 	<div class="container" style="padding: 90px 0;">
 		<div class="row justify-content-between">
 			<div class="col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
-				<div data-aos="zoom-out">
-					<h1 class="mb-5">Daftar sebagai pengelola <span>Fitness Center</span></h1>
+				<div data-aos="zoom-out" <h1 class="mb-5">Daftar sebagai pengelola <span>Fitness Center</span></h1>
 					<div class="text-center text-lg-start">
 						<h2>Masuk dengan</h2>
 						<a href="<?= $tombol_login ?>/customer" class="btn btn-secondary px-5">

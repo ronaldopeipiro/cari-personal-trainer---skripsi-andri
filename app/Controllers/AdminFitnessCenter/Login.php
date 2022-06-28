@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Controllers\Personil;
+namespace App\Controllers\AdminFitnessCenter;
 
 use CodeIgniter\Controller;
+use App\Models\FitnessCenterModel;
 use App\Models\AdminFitnessCenterModel;
 
 class Login extends Controller
@@ -12,6 +13,7 @@ class Login extends Controller
 		$this->db = \Config\Database::connect();
 		$this->validation = \Config\Services::validation();
 		$this->request = \Config\Services::request();
+		$this->FitnessCenterModel = new FitnessCenterModel();
 		$this->AdminFitnessCenterModel = new AdminFitnessCenterModel();
 
 		$this->namaAkunEmailSMTP = "CARI PERSONAL TRAINER APP";
@@ -92,11 +94,11 @@ class Login extends Controller
 	{
 		helper(['form']);
 		$data = [
-			'title' => 'LOGIN PERSONAL TRAINERY',
+			'title' => 'LOGIN FITNESS CENTER',
 			'db' => $this->db,
 			'validation' => $this->validation
 		];
-		return view('personal-trainer/auth/sign-in', $data);
+		return view('fitness-center/auth/sign-in', $data);
 	}
 
 	public function auth()
@@ -105,24 +107,24 @@ class Login extends Controller
 		$username = $this->request->getPost('username');
 		$password = $this->request->getPost('password');
 
-		$data = ($this->db->query("SELECT * FROM personal_trainer WHERE username='$username' OR email='$username' LIMIT 1"))->getRow();
+		$data = ($this->db->query("SELECT * FROM admin_fitness_center WHERE username='$username' OR email='$username' LIMIT 1"))->getRow();
 
 		if ($data) {
 			$pass = $data->password;
-			$status = $data->status_akun;
+			$status = $data->status;
 
 			if ($status != "2") {
 				$verify_pass = password_verify($password, $pass);
 				if ($verify_pass) {
 					$ses_data = [
-						'id_user' => $data->id_personal_trainer,
-						'logged_in_personil'  => TRUE
+						'id_user' => $data->id_admin,
+						'login_admin_fc_cari_pt_andri_kurniawan'  => TRUE
 					];
 
 					$waktu_login = date("Y-m-d H:i:s");
-					$this->AdminFitnessCenterModel->updatePersonalTrainer([
+					$this->AdminFitnessCenterModel->updateAdminFitnessCenter([
 						'last_login' => $waktu_login
-					], $data->id_personal_trainer);
+					], $data->id_admin);
 
 					$session->set($ses_data);
 					echo json_encode(array(
@@ -153,23 +155,23 @@ class Login extends Controller
 	{
 		helper(['form']);
 		$data = [
-			'title' => 'LUPA PASSWORD AKUN PERSONAL TRAINER',
+			'title' => 'LUPA PASSWORD AKUN ADMIN FITNESS CENTER',
 			'db' => $this->db,
 			'validation' => $this->validation
 		];
-		return view('personal-trainer/auth/lupa-password', $data);
+		return view('fitness-center/auth/lupa-password', $data);
 	}
 
 	public function reset_password($token_reset_password)
 	{
 		helper(['form']);
 		$data = [
-			'title' => 'RESET PASSWORD AKUN',
+			'title' => 'RESET PASSWORD AKUN ADMIN FITNESS CENTER',
 			'db' => $this->db,
 			'validation' => $this->validation,
 			'token' => $token_reset_password
 		];
-		return view('personal-trainer/auth/reset-password', $data);
+		return view('fitness-center/auth/reset-password', $data);
 	}
 
 	public function submit_lupa_password()
@@ -185,19 +187,19 @@ class Login extends Controller
 			return false;
 		}
 
-		$cek_data = $this->db->query("SELECT * FROM personal_trainer WHERE email='$username' OR username='$username' ORDER BY id_personal_trainer DESC LIMIT 1");
+		$cek_data = $this->db->query("SELECT * FROM admin_fitness_center WHERE email='$username' OR username='$username' ORDER BY id_admin DESC LIMIT 1");
 
 		if ($row = $cek_data->getRow()) {
-			$id_personal_trainer = $row->id_personal_trainer;
+			$id_admin = $row->id_admin;
 			$nama_lengkap = $row->nama_lengkap;
 			$email = $row->email;
 			$username = $row->username;
 
 			$token = $this->getToken(197);
 
-			$this->AdminFitnessCenterModel->updatePersonalTrainer([
+			$this->AdminFitnessCenterModel->updateAdminFitnessCenter([
 				'token_reset_password' => $token
-			], $id_personal_trainer);
+			], $id_admin);
 
 			$this->kirim_email_reset_password($nama_lengkap, $username, $email, $token);
 
@@ -245,8 +247,8 @@ class Login extends Controller
 					Jika benar bahwa anda yang meminta untuk melakukan reset password, silahkan lakukan reset password akun anda melalui tautan berikut.
 					<br>
 					<br>
-					<a href="' . base_url() . '/personal-trainer/reset-password/' . $token . '">
-						' . base_url() . '/personal-trainer/reset-password/' . $token . '
+					<a href="' . base_url() . '/fitness-center/reset-password/' . $token . '">
+						' . base_url() . '/fitness-center/reset-password/' . $token . '
 					</a>
 					<br>
 					<br>
@@ -300,19 +302,19 @@ class Login extends Controller
 
 		if ($password_baru == $konfirmasi_password) {
 
-			$cek_data = $this->AdminFitnessCenterModel->getPersonilByTokenResetPassword($token_reset_password);
+			$cek_data = $this->AdminFitnessCenterModel->getAdminFitnessCenterByTokenResetPassword($token_reset_password);
 			if ($cek_data) {
-				$id_personal_trainer = $cek_data['id_personal_trainer'];
+				$id_admin = $cek_data['id_admin'];
 				$nama_lengkap = $cek_data['nama_lengkap'];
 				$username = $cek_data['username'];
 				$email = $cek_data['email'];
 
 				$password_baru_hash = password_hash($password_baru, PASSWORD_DEFAULT);
 
-				$this->AdminFitnessCenterModel->updatePersonalTrainer([
+				$this->AdminFitnessCenterModel->updateAdminFitnessCenter([
 					'password' => $password_baru_hash,
 					'token_reset_password' => '',
-				], $id_personal_trainer);
+				], $id_admin);
 
 				$this->kirim_email_konfirmasi_update_password($nama_lengkap, $username, $email, $password_baru);
 
@@ -392,15 +394,15 @@ class Login extends Controller
 					<br>
 					Silahkan login aplikasi melalui tautan berikut ini
 					<br>
-					<a href="' . base_url() . '/personal-trainer/sign-in">
-						' . base_url() . '/personal-trainer/sign-in
+					<a href="' . base_url() . '/fitness-center/sign-in">
+						' . base_url() . '/fitness-center/sign-in
 					</a>
 					<br>
 					<br>
 						Jika ini bukan anda, silahkan lakukan permintaan reset password akun anda melalui tautan berikut :
 					<br>
-					<a href="' . base_url() . '/personal-trainer/lupa-password">
-						' . base_url() . '/personal-trainer/lupa-password
+					<a href="' . base_url() . '/fitness-center/lupa-password">
+						' . base_url() . '/fitness-center/lupa-password
 					</a>
 					<br>
 					<br>

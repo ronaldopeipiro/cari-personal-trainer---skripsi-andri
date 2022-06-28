@@ -32,6 +32,21 @@ class AdminFitnessCenterModel extends Model
 		return $this->where(['id_admin' => $id_admin])->first();
 	}
 
+	public function getAdminFitnessCenterByIdFitnessCenter($id_fitness_center)
+	{
+		return $this->where([
+			'id_fitness_center' => $id_fitness_center
+		])->orderBy('idi_admin', 'desc')->findAll();
+	}
+
+	public function getAdminFitnessCenterByTokenResetPassword($token_reset_password)
+	{
+		return $this->where([
+			'token_reset_password' => $token_reset_password
+		])->first();
+	}
+
+
 	public function getAdminFitnessCenterByStatus($status)
 	{
 		return $this->where([
