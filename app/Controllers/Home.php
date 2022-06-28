@@ -39,24 +39,34 @@ class Home extends BaseController
         return $ipaddress;
     }
 
-    public function beranda()
+    public function dashboard()
     {
         $data = [
             'request' => $this->request,
             'db' => $this->db,
             'title' => 'BERANDA',
         ];
-        return view('landing/home/views', $data);
+        return view('landing/dashboard/views', $data);
     }
 
-    public function offline()
+    public function fitness_center()
     {
         $data = [
             'request' => $this->request,
             'db' => $this->db,
-            'title' => 'OFFLINE',
+            'title' => 'BERANDA',
         ];
-        return view('landing/offline/views', $data);
+        return view('landing/fitness-center/views', $data);
+    }
+
+    public function personal_trainer()
+    {
+        $data = [
+            'request' => $this->request,
+            'db' => $this->db,
+            'title' => 'PERSONAL TRAINER',
+        ];
+        return view('landing/personal-trainer/views', $data);
     }
 
     public function tentang()

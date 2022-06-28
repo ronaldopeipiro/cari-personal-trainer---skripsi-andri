@@ -6,7 +6,7 @@ use CodeIgniter\Controller;
 use App\Models\FitnessCenterModel;
 use App\Models\AdminFitnessCenterModel;
 
-class Login extends Controller
+class Auth extends Controller
 {
 	public function __construct()
 	{
@@ -90,18 +90,29 @@ class Login extends Controller
 		return $token;
 	}
 
-	public function index()
+	public function sign_in()
 	{
 		helper(['form']);
 		$data = [
-			'title' => 'LOGIN FITNESS CENTER',
+			'title' => 'LOGIN - FITNESS CENTER',
 			'db' => $this->db,
 			'validation' => $this->validation
 		];
 		return view('fitness-center/auth/sign-in', $data);
 	}
 
-	public function auth()
+	public function sign_up()
+	{
+		helper(['form']);
+		$data = [
+			'title' => 'DAFTAR AKUN - FITNESS CENTER',
+			'db' => $this->db,
+			'validation' => $this->validation
+		];
+		return view('fitness-center/auth/sign-up', $data);
+	}
+
+	public function login()
 	{
 		$session = session();
 		$username = $this->request->getPost('username');
@@ -151,11 +162,68 @@ class Login extends Controller
 		}
 	}
 
+	public function daftar_akun()
+	{
+		$session = session();
+		$nama_fitness_center = $this->request->getPost('nama_fitness_center');
+		$username = $this->request->getPost('username');
+		$password = $this->request->getPost('password');
+		$nama_lengkap_admin = $this->request->getPost('nama_lengkap_admin');
+		$email = $this->request->getPost('email');
+
+		$cek_username = ($this->db->query("SELECT * FROM admin_fitness_center WHERE username='$username' LIMIT 1"))->getRow();
+		if ($cek_username) {
+			echo json_encode(array(
+				'success' => '0',
+				'pesan' => 'Username telah digunakan !'
+			));
+
+			return false;
+		}
+
+		$cek_email = ($this->db->query("SELECT * FROM admin_fitness_center WHERE email='$email' LIMIT 1"))->getRow();
+		if ($cek_email) {
+			echo json_encode(array(
+				'success' => '0',
+				'pesan' => 'Email telah digunakan !'
+			));
+
+			return false;
+		}
+
+		$querySaveFC = $this->FitnessCenterModel->save([
+			'nama_fitness_center' => $nama_fitness_center
+		]);
+		$id_fitness_center = $this->FitnessCenterModel->getInsertID();
+
+		$password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+		$querySaveAkun = $this->AdminFitnessCenterModel->save([
+			'id_fitness_center' => $id_fitness_center,
+			'username' => $username,
+			'password' => $password_hash,
+			'nama_lengkap' => $nama_lengkap_admin,
+			'email' => $email
+		]);
+
+		if ($querySaveAkun) {
+			echo json_encode(array(
+				'success' => '1',
+				'pesan' => 'Akun berhasil dibuat, silahkan login untuk mulai menggunakan aplikasi !'
+			));
+		} else {
+			echo json_encode(array(
+				'success' => '0',
+				'pesan' => 'Akun gagal dibuat, mohon periksa kembali data anda !'
+			));
+		}
+	}
+
 	public function lupa_password()
 	{
 		helper(['form']);
 		$data = [
-			'title' => 'LUPA PASSWORD AKUN ADMIN FITNESS CENTER',
+			'title' => 'LUPA PASSWORD AKUN - ADMIN FITNESS CENTER',
 			'db' => $this->db,
 			'validation' => $this->validation
 		];
@@ -166,7 +234,7 @@ class Login extends Controller
 	{
 		helper(['form']);
 		$data = [
-			'title' => 'RESET PASSWORD AKUN ADMIN FITNESS CENTER',
+			'title' => 'RESET PASSWORD AKUN - ADMIN FITNESS CENTER',
 			'db' => $this->db,
 			'validation' => $this->validation,
 			'token' => $token_reset_password
