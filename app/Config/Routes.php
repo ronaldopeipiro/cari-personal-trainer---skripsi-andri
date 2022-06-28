@@ -16,6 +16,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * Router Setup
  * --------------------------------------------------------------------
  */
+
 $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
@@ -33,7 +34,6 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 
 
-
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::beranda');
@@ -41,10 +41,6 @@ $routes->get('/', 'Home::beranda');
 // Driver
 $routes->get('/customer/sign-in', 'Customer\Login::index', ['filter' => 'auth_not_login_customer']);
 $routes->get('/customer', 'Customer\Dashboard::index', ['filter' => 'auth_customer']);
-
-$routes->get('/customer/pengantaran', 'Customer\Pengantaran::index', ['filter' => 'auth_customer']);
-$routes->get('/customer/pengantaran/create', 'Customer\Pengantaran::create', ['filter' => 'auth_customer']);
-$routes->get('/customer/pengantaran/detail/(:num)', 'Customer\Pengantaran::detail/$1', ['filter' => 'auth_customer']);
 
 $routes->get('/customer/orderan', 'Customer\Orderan::index', ['filter' => 'auth_customer']);
 
@@ -57,8 +53,7 @@ $routes->get('/customer/logout', 'Logout::customer', ['filter' => 'auth_customer
 
 
 // Personal Trainer
-$routes->get('/personal-trainer/login', 'PersonalTrainer\Auth::login', ['filter' => 'auth_not_login_personal_trainer']);
-$routes->get('/personal-trainer/sign-up', 'PersonalTrainer\Auth::sign_up', ['filter' => 'auth_not_login_personal_trainer']);
+$routes->get('/personal-trainer/sign-in', 'PersonalTrainer\Auth::index', ['filter' => 'auth_not_login_personal_trainer']);
 $routes->get('/personal-trainer/lupa-password', 'PersonalTrainer\Auth::lupa_password', ['filter' => 'auth_not_login_personal_trainer']);
 $routes->get('/personal-trainer/reset-password/(:any)', 'PersonalTrainer\Auth::reset_password/$1', ['filter' => 'auth_not_login_personal_trainer']);
 $routes->get('/personal-trainer', 'PersonalTrainer\Dashboard::index', ['filter' => 'auth_personal_trainer']);
@@ -75,7 +70,10 @@ $routes->get('/personal-trainer/logout', 'Logout::personal_trainer', ['filter' =
 
 
 // Fitness Center
-$routes->get('/fitness-center/login', 'AdminFitnessCenter\Auth::login', ['filter' => 'auth_not_login_admin_fitness_center']);
+$routes->get('/fitness-center/sign-in', 'AdminFitnessCenter\Auth::sign_in', ['filter' => 'auth_not_login_admin_fitness_center']);
+$routes->get('/fitness-center/sign-up', 'AdminFitnessCenter\Auth::sign_up', ['filter' => 'auth_not_login_admin_fitness_center']);
+$routes->get('/fitness-center/lupa-password', 'AdminFitnessCenter\Auth::lupa_password', ['filter' => 'auth_not_login_admin_fitness_center']);
+$routes->get('/fitness-center/reset-password/(:any)', 'AdminFitnessCenter\Auth::reset_password/$1', ['filter' => 'auth_not_login_admin_fitness_center']);
 $routes->get('/fitness-center', 'AdminFitnessCenter\Dashboard::index', ['filter' => 'auth_admin_fitness_center']);
 
 $routes->get('/fitness-center/orderan', 'AdminFitnessCenter\Orderan::index', ['filter' => 'auth_admin_fitness_center']);

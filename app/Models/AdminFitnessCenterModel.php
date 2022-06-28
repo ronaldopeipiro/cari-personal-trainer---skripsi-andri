@@ -10,23 +10,21 @@ class AdminFitnessCenterModel extends Model
 	protected $table = 'admin_fitness_center';
 	protected $allowedFields = [
 		'id_admin',
+		'id_fitness_center',
 		'username',
 		'password',
 		'nama_lengkap',
 		'email',
 		'no_hp',
 		'foto',
-		'jenis_kelamin',
-		'latitude',
-		'longitude',
 		'status',
-		'token_reset_password',
+		'last_login',
 		'create_datetime',
 		'update_datetime',
-		'last_login'
+		'token_reset_password',
 	];
 
-	public function getCustomer($id_admin = false)
+	public function getAdminFitnessCenter($id_admin = false)
 	{
 		if ($id_admin == false) {
 			return $this->orderBy('id_admin', 'desc')->findAll();
@@ -34,20 +32,20 @@ class AdminFitnessCenterModel extends Model
 		return $this->where(['id_admin' => $id_admin])->first();
 	}
 
-	public function getCustomerByStatus($status)
+	public function getAdminFitnessCenterByStatus($status)
 	{
 		return $this->where([
 			'status' => $status
 		])->orderBy('id_admin', 'DESC')->findAll();
 	}
 
-	public function updateCustomer($data, $id)
+	public function updateAdminFitnessCenter($data, $id)
 	{
 		$query = $this->db->table($this->table)->update($data, array('id_admin' => $id));
 		return $query;
 	}
 
-	public function deleteCustomer($id)
+	public function deleteAdminFitnessCenter($id)
 	{
 		return $this->db->table($this->table)->delete(['id_admin' => $id]);
 	}

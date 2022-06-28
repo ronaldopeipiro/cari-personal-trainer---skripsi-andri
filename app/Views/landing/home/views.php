@@ -11,7 +11,8 @@
 					<h2>Masuk sebagai</h2>
 					<div class="text-center text-lg-start">
 						<a href="<?= base_url(); ?>/customer" class="btn-get-started scrollto">Customer</a>
-						<a href="<?= base_url(); ?>/personal-trainer" class="btn-get-started scrollto">Personal Trainer</a>
+						<!-- <a href="<?= base_url(); ?>/personal-trainer" class="btn-get-started scrollto">Personal Trainer</a> -->
+						<a href="<?= base_url(); ?>/fitness-center" class="btn-get-started scrollto">Fitness Center</a>
 					</div>
 				</div>
 			</div>
